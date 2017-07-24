@@ -12,12 +12,15 @@ namespace bouncy
         CCLabel label;
         CCSprite paddleSprite, ballSprite;
 
-        public IntroLayer() : base(CCColor4B.Blue)
+        public IntroLayer() : base(CCColor4B.Black)
         {
 
             // create and initialize a Label
             label = new CCLabel("Hello CocosSharp", "fonts/MarkerFelt", 22, CCLabelFormat.SpriteFont);
-
+            paddleSprite = new CCSprite("paddle");
+            AddChild(paddleSprite);
+            ballSprite = new CCSprite("ball");
+            AddChild(ballSprite);
             // add the label as a child to this Layer
             AddChild(label);
             
@@ -31,11 +34,16 @@ namespace bouncy
             var bounds = VisibleBoundsWorldspace;
 
             // position the label on the center of the screen
-            label.Position = bounds.Center;
+            label.PositionY = bounds.MinY-30 ;
+            paddleSprite.PositionX = 100;
+            paddleSprite.PositionY = 100;
+            ballSprite.PositionX = 320;
+            ballSprite.PositionY = 640;
 
             // Register for touch events
             var touchListener = new CCEventListenerTouchAllAtOnce();
-            touchListener.OnTouchesEnded = OnTouchesEnded;
+            touchListener.OnTouchesMoved = OnTouchesEnded;
+            touchListener.OnTouchesBegan = OnTouchesEnded;
             AddEventListener(touchListener, this);
         }
 
@@ -43,6 +51,8 @@ namespace bouncy
         {
             if (touches.Count > 0)
             {
+
+                paddleSprite.RunAction(new CCMoveTo(.1f, new CCPoint(touches[0].Location.X, paddleSprite.PositionY)));
                 // Perform touch handling here
             }
         }
